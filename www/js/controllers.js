@@ -64,20 +64,21 @@ angular.module('digitel.controllers',[])
   });
   $timeout(function () {
     if("idCliente" in localStorage){
+      console.log("entra");
       $rootScope.idUsuario=$localstorage.get('idCliente');
       clienteExiste=clientService.get({id:$rootScope.idUsuario},function() {
         $ionicLoading.hide();
         if(!clienteExiste.ClienteResult.Error){
           if (clienteExiste.ClienteResult.AfiliacionAppCompleta){
-           $state.go('tab.dash'); 
-         }
-         else {
-           $state.go('pendingApproval');      
-         };
-       }else{
-        alert(cliente.ClienteResult.MensajeError);
-      }
-    });
+            $state.go('tab.dash'); 
+          }
+          else {
+            $state.go('pendingApproval');      
+          };
+        }else{
+          alert(cliente.ClienteResult.MensajeError);
+        }
+      });
     } else {
       $state.go('login');
       $ionicLoading.hide();
@@ -139,12 +140,9 @@ angular.module('digitel.controllers',[])
     $rootScope.ofertaResultado={nombre:oferta.Nombre,imagenGrande:oferta.BannerPublicitario};
   }
 })
-.controller('DashCtrl',function($ionicLoading,$resource,$scope,$rootScope,$http,clientService,actualizarClienteService,desafiliarClienteService,actualizarFotoService,$localstorage,$state,$ionicPopup,limitToFilter){
-
+.controller('DashCtrl',function($cordovaFileTransfer,$ionicLoading,$resource,$scope,$rootScope,$http,clientService,actualizarClienteService,desafiliarClienteService,actualizarFotoService,$localstorage,$state,$ionicPopup,limitToFilter){
   var colorCategoria="#ebebeb";
-
   $scope.html = "<a class='item item-icon-left' href='http://aws02.impetuscr.com/appdigitel/AppTerminosYCondiciones.html'><i class='icon ion-information-circled'></i>T&eacute;rminos y Condiciones</a>";
-
   $scope.loading = $ionicLoading.show({
     template: '<i class="icon ion-loading-b"></i>Cargando',
     animation: 'fade-in',
@@ -152,62 +150,45 @@ angular.module('digitel.controllers',[])
     maxWidth: 50,
     showDelay: 0
   });
+  var cliente=clientService.get({id:$rootScope.idUsuario});
+  cliente.$promise.then(function(result){
+    $ionicLoading.hide();
+    $scope.puntos={
+      puntosNombreCategoria:cliente.ClienteResult.ProgramaLealtadNombreCategoria,
+      puntosAcumulados:cliente.ClienteResult.ProgramaLealtadPuntosAcumulados,
+      puntosCanjeables:cliente.ClienteResult.ProgramaLealtadPuntosCanjeables,
+      puntosCaducan:cliente.ClienteResult.ProgramaLealtadPuntosCaducanEn,
+      puntosFinalCategoria:cliente.ClienteResult.ProgramaLealtadRangoFinalCategoria,
+      puntosInicioCategoria:cliente.ClienteResult.ProgramaLealtadRangoInicioCategoria
+    }
+    $scope.cliente={
+      nombreCliente:cliente.ClienteResult.Nombre, 
+      mailCliente:cliente.ClienteResult.CorreoElectronico, 
+      telefonoCliente:cliente.ClienteResult.TelefonoMovil,
+      direccionCliente:cliente.ClienteResult.Direccion
+    }
+    if((cliente.ClienteResult.Foto).length > 1){
+      $scope.cliente.foto=(cliente.ClienteResult.Foto);
+    }else{
+      $scope.cliente.foto=null;
+    }
+    colorCategoria=(cliente.ClienteResult.ProgramaLealtadColorCategoria); 
 
-var cliente=clientService.get({id:$rootScope.idUsuario});
+    var puntosGrafico=$scope.puntos.puntosAcumulados;
+    if($scope.puntos.puntosFinalCategoria != -1){
+      puntosGrafico=(puntosGrafico/$scope.puntos.puntosFinalCategoria)*100;  
+    }else{
+      puntosGrafico=100;
+      $scope.puntos.puntosFinalCategoria='∞';
+    };
 
-cliente.$promise.then(function(result){
-  $ionicLoading.hide();
-  $scope.puntos={
-    puntosNombreCategoria:cliente.ClienteResult.ProgramaLealtadNombreCategoria,
-    puntosAcumulados:cliente.ClienteResult.ProgramaLealtadPuntosAcumulados,
-    puntosCanjeables:cliente.ClienteResult.ProgramaLealtadPuntosCanjeables,
-    puntosCaducan:cliente.ClienteResult.ProgramaLealtadPuntosCaducanEn,
-    puntosFinalCategoria:cliente.ClienteResult.ProgramaLealtadRangoFinalCategoria,
-    puntosInicioCategoria:cliente.ClienteResult.ProgramaLealtadRangoInicioCategoria
-  }
-  $scope.cliente={
-    nombreCliente:cliente.ClienteResult.Nombre, 
-    mailCliente:cliente.ClienteResult.CorreoElectronico, 
-    telefonoCliente:cliente.ClienteResult.TelefonoMovil,
-    direccionCliente:cliente.ClienteResult.Direccion
-  }
-  if((cliente.ClienteResult.Foto).length > 1){
-    $scope.cliente.foto=(cliente.ClienteResult.Foto);
-  }else{
-    $scope.cliente.foto=null;
-  }
-  colorCategoria=(cliente.ClienteResult.ProgramaLealtadColorCategoria); 
-
-  var puntosGrafico=$scope.puntos.puntosAcumulados;
-  if($scope.puntos.puntosFinalCategoria != -1){
-    puntosGrafico=(puntosGrafico/$scope.puntos.puntosFinalCategoria)*100;  
-  }else{
-    puntosGrafico=100;
-    $scope.puntos.puntosFinalCategoria='∞';
-  };
-
-  var puntosGraficoR=100-puntosGrafico; 
-  $("#barcode").JsBarcode(cliente.ClienteResult.ProgramaLealtadNumeroClienteFrecuente,{displayValue:true,height:60});
-  $scope.ideas = [
-  {y: puntosGrafico,color:colorCategoria}, {y:puntosGraficoR,color:'#ebebeb'}
-  ];
-  $scope.points = limitToFilter($scope.ideas, 2);
-});
-
-$scope.logOut = function (){
- var logOutPopup = $ionicPopup.confirm({
-  title:'Atenci&oacute;n',
-  template:'Si cierra la sesi&oacute;n deber&aacute; volver a realizar el proceso de afiliaci&oacute;n'
-});
- logOutPopup.then(function(res) {
-  if(res) {
-    desafiliarClienteService.get({id:$rootScope.idUsuario});
-    navigator.app.exitApp();
-    $localstorage.clear();
-  }
-});
-};
-
+    var puntosGraficoR=100-puntosGrafico; 
+    $("#barcode").JsBarcode(cliente.ClienteResult.ProgramaLealtadNumeroClienteFrecuente,{displayValue:true,height:60});
+    $scope.ideas = [
+    {y: puntosGrafico,color:colorCategoria}, {y:puntosGraficoR,color:'#ebebeb'}
+    ];
+    $scope.points = limitToFilter($scope.ideas, 2);
+  });
 $scope.actualizarCliente=function (actualizar) { 
   actualizacion=actualizarClienteService.get({
     id:$rootScope.idUsuario,
@@ -216,11 +197,7 @@ $scope.actualizarCliente=function (actualizar) {
     telCliente:actualizar.telefonoCliente,
     dirCliente:actualizar.direccionCliente
   });
-  console.log(actualizar.foto);
-  foto=actualizarFotoService.get({
-    id:$rootScope.idUsuario,
-    foto:actualizar.foto
-  });
+  uploadPhoto(actualizar.foto);
   $scope.cliente.nombreCliente=actualizar.nombreCliente;
   $ionicPopup.alert({
     title:'Atenci&oacute;n',
@@ -238,7 +215,7 @@ $scope.getNewPhoto = function() {
   }, function(err) {
     console.err(err);
   },{
-    destinationType : navigator.camera.DestinationType.DATA_URL,
+    destinationType : navigator.camera.DestinationType.FILE_URI,
     quality:2
   });
 };
@@ -248,13 +225,68 @@ $scope.getOldPhoto = function() {
   }, function(err) {
     console.err(err);
   },{
-    destinationType : navigator.camera.DestinationType.DATA_URL,
+    destinationType : navigator.camera.DestinationType.FILE_URI,
     sourceType : navigator.camera.PictureSourceType.PHOTOLIBRARY,
     quality:2
   });
 };
-})
+function uploadBlobOrFile(blobOrFile) 
+{
+  var xhr = new XMLHttpRequest(); 
+  xhr.open('POST', 'http://54.183.76.52/AppDigitel/AppWCF.svc/CambiarFotoCliente/5263/key/JdvbEFJWJu5UVtk59', true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      console.log(xhr.responseText);
+    }
+  };
+  xhr.send(blobOrFile);
+}
 
+function upload(uri) {
+  console.log(uri);
+  var options = {
+    fileKey: "avatar",
+    fileName: "avatar.jpg",
+    chunkedMode: false,
+    mimeType: "image/*"
+  };
+  $cordovaFileTransfer.upload("http://54.183.76.52/AppDigitel/AppWCF.svc/CambiarFotoCliente/5263/key/JdvbEFJWJu5UVtk59", uri, options).then(function(result) {
+    console.log("SUCCESS: " + JSON.stringify(result.response));
+  }, function(err) {
+    console.log("ERROR: " + JSON.stringify(err));
+  }, function (progress) {
+            // constant progress updates
+          });
+}
+
+function uploadPhoto(imageURI) {
+  var options = new FileUploadOptions();
+  options.fileKey="file";
+  options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+  options.mimeType="image/*";
+
+  var params = new Object();
+  params.value1 = "test";
+  params.value2 = "param";
+
+  // options.params = params;
+
+  var ft = new FileTransfer();
+  ft.upload(imageURI, "http://54.183.76.52/AppDigitel/AppWCF.svc/CambiarFotoCliente/5263/key/JdvbEFJWJu5UVtk59", win, fail, options);
+}
+
+function win(r) {
+  console.log("Code = " + r.responseCode);
+  console.log("Response = " + r.response);
+  console.log("Sent = " + r.bytesSent);
+}
+
+function fail(error) {
+  console.log("Upload error code " + error.code);
+  console.log("upload error source " + error.source);
+  console.log("upload error target " + error.target);
+}
+})
 .controller('PointsCtrl',function($resource,$scope,$rootScope,$http,$state,historicoPuntosService){
   puntosCliente=historicoPuntosService.get({id:$rootScope.idUsuario},function(){
     $scope.puntos = puntosCliente.ObtenerProgramaLealtadMovimientoPuntosResult;

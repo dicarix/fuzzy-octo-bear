@@ -1,7 +1,7 @@
 angular.module('digitel.services',[])
 
 .factory('afiliatonService', function($resource) {
-  return $resource('http://54.183.76.52/AppDigitel/AppWCF.svc/Afiliacion/:id/CorreoElectronico/:correoCliente/key/JdvbEFJWJu5UVtk59',{id:'@id',correoCliente:'@correoCliente'});
+	return $resource('http://54.183.76.52/AppDigitel/AppWCF.svc/Afiliacion/:id/CorreoElectronico/:correoCliente/key/JdvbEFJWJu5UVtk59',{id:'@id',correoCliente:'@correoCliente'});
 })
 
 .factory('clientService',function($resource){

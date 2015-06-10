@@ -15,12 +15,23 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "org.apache.cordova.network-information",
-    "org.apache.cordova.camera",
-    "org.apache.cordova.media",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-file",
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-file-transfer",
+    "com.ionic.keyboard",
+    "cordova-plugin-whitelist",
+    "cordova-plugin-media",
+    "cordova-plugin-network-information",
+    "cordova-plugin-camera",
+    "cordova-plugin-device",
+    "cordova-plugin-geolocation"
   ],
   "cordovaPlatforms": [
-    "ios"
+    "android",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    }
   ]
 }

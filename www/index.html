@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html ng-app="digitel">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src: 'self' 'unsafe-inline' 'unsafe-eval'">
+     --><title></title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -16,8 +17,8 @@
     <script src="lib/jsbarcode/JsBarcode.js"></script>
     <script src="lib/jsbarcode/CODE128.js"></script>
     <script src="lib/angular-img-fallback/angular.dcb-img-fallback.min.js"></script>
-    <script src="lib/highcharts/highcharts.js"></script>
-    <script src="lib/highcharts/highcharts-more.js"></script>
+    <script src="lib/highcharts-release/highcharts.js"></script>
+    <script src="lib/highcharts-release/highcharts-more.js"></script>
     <script src="cordova.js"></script>
     
     <!-- app's js -->
@@ -26,11 +27,11 @@
     <script src="js/directives.js"></script>
     <script src="js/services.js"></script>
     <script src="js/utils.js"></script>
-  
-  </head>
 
-  <body>
+</head>
+
+<body>
     <ion-nav-view></ion-nav-view>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCsKdRpExw3JqcajzLYdW8oMdmt16uMMc&sensor=true"></script>
-  </body>
+</body>
 </html>
