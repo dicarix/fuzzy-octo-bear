@@ -1,0 +1,26 @@
+<ion-view view-title="Offers">
+<div class="bar bar-header bar-stable">
+	<div class="title">ofertas</div>
+</div>
+<ion-content class="has-header">
+ <div class="row">
+      <div class="col col-centered">
+        <img class="logo" src="img/logo.png" alt="Digitel">
+      </div>
+    </div>
+    
+  	<div ng-repeat="oferta in ofertas">
+    <div class="list card">
+      <div class="item item-avatar nowrap">
+          <img style="margin-top:4%" ng-src="data:image/JPEG;base64,{{oferta.ImagenPrincipal}}">
+          <h2 class="nowrap"> {{oferta.Nombre}}</h2>
+          <h3 class="nowrap">{{oferta.Descripcion}}</h3>
+        </div>
+        <a class="item item-icon-right positive" ui-sref="offers.detail" ng-click="test(oferta)">
+              <i class="icon ion-ios7-arrow-forward"></i>
+              Ver detalles
+        </a>
+    </div>
+</div>
+</ion-content>
+</ion-view>

@@ -1,0 +1,25 @@
+<div class="bar bar-header bar-stable">
+      <div class="title">AFILIACI&Oacute;N</div>
+    </div>
+      <div class="content has-header">
+        <form novalidate class="simple-form" name="Login">
+        <div class="list list-inset">
+          <label class="item item-input">
+            <input type="number" placeholder="Identificaci&oacute;n" ng-model="user.id">
+          </label>
+          <label class="item item-input">
+            <input type="email" placeholder="Correo electr&oacute;nico" name="email"ng-model="user.email" required>
+          </label>
+          <span class="error" ng-show="Login.email.$error.email">Ingrese una direcci&oacute;n valida</span>
+           <a class="button icon-right ion-chevron-right button-block button-positive" ng-click="logueo(user);expandme=true" ng-model="expandme">Afiliar</a>
+          </div>
+      </form>
+      <div class="card" ng-show="expandme">
+            <div class="item item-divider">
+            Atenci&oacute;n
+            </div>
+            <div class="item item-text-wrap">
+              <p id="result" style="color: red;">{{resultado}}</p>
+            </div>
+          </div>
+      </div>

@@ -1,0 +1,33 @@
+<div class="bar bar-header bar-stable">
+  <div class="buttons">
+    <a class="button icon-left ion-chevron-left button-clear" ng-click="regresar()"></a>
+  </div>
+  <div class="title">Editar Perfil</div>
+</div>
+<div class="content has-header">
+  <form novalidate class="simple-form" name="actualizar">
+    <div class="list list-inset">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Nombre</span>
+        <input type="text" ng-model="cliente.nombreCliente"/>
+      </label>
+      <label class="item item-input item-stacked-label">
+       <span class="input-label">Email</span>
+       <input type="email" ng-model="cliente.mailCliente">
+     </label>
+     <label class="item item-input item-stacked-label">
+       <span class="input-label">Tel&eacute;no</span>
+       <input type="tel" ng-model="cliente.telefonoCliente">
+     </label>
+     <label class="item item-input item-stacked-label">
+       <span class="input-label">Direcci&oacute;n</span>
+       <input type="text" ng-model="cliente.direccionCliente">
+     </label>
+     <div class="button-bar">
+       <a class="button button-calm" ng-click="getNewPhoto()" ng-model="cliente.foto">Tomar Foto</a>
+       <a class="button button-calm" ng-click="getOldPhoto()" ng-model="cliente.foto">Ver Galer&iacute;a</a>
+     </div>
+     <a class="button button-block button-positive" ng-click="actualizarCliente(cliente)">Editar</a>
+   </div>
+ </form>
+</div>

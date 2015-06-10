@@ -1,0 +1,16 @@
+<div class="bar bar-header bar-stable">
+  <div class="buttons">
+    <a class="button icon-left ion-chevron-left button-clear" ng-click="regresar()"></a>
+  </div>
+  <div class="title">T&eacute;rminos y Condiciones</div>
+</div>
+<div class="content has-header">
+         <h1>Before</h1>
+
+        <p ng-bind-html="html"></p>
+        <p ng-bind-html="plaintext"></p>
+         <h1>After</h1>
+
+        <p ng-bind-html="html | hrefToJS"></p>
+        <p ng-bind-html="plaintext | linky | hrefToJS"></p>
+</div>

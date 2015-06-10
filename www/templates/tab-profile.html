@@ -1,0 +1,42 @@
+<ion-view view-title="Profile">
+<div class="bar bar-header bar-stable">
+	<div class="title">Perfil</div>
+</div>
+<ion-content class="has-header">
+<div class="row padding-top">
+<div class="col text-center">
+  <img class="avatar" ng-src="data:image/JPEG;base64,{{cliente.foto}}" fallback-src="img/avatar.png" />
+</div>
+</div>
+<div class="row">
+	<div class="col text-center">
+		<h3>{{cliente.nombreCliente}}</h3>
+	</div>
+</div>
+<div class="row">
+	<div class="row">
+		<div class="col text-center">
+			<h4>{{cliente.mailCliente}}</h4>
+		</div>
+	</div>
+</div>
+<div class="list">
+
+  <a class="item item-icon-left" ui-sref="profile.edit">
+    <i class="icon ion-edit"></i>
+    Editar perfil
+  </a>
+
+  <a class="item item-icon-left" ui-sref="profile.points">
+    <i class="icon ion-clipboard"></i>
+    Hist&oacute;rico de puntos
+  </a>
+    <span ng-bind-html="html | hrefToJS"></span>
+    
+  <!-- <a class="item item-icon-left" ng-click="logOut()">
+    <i class="icon ion-log-out"></i>
+    Cerrar sesi&oacute;n
+  </a> -->
+</div>
+</ion-content>
+</ion-view>
