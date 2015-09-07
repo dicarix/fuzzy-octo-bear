@@ -2,7 +2,7 @@ angular.module('digitel.controllers',[])
 
 .controller('LocationCtrl', function($scope, $ionicLoading, $http) {
   $scope.locations=[];
-  $http.get("http://aws02.impetuscr.com/appdigitel/AppWCF.svc/ObtenerLocales/JdvbEFJWJu5UVtk59")
+  $http.get("http://erp.impetuscr.com/Appdigitel/AppWCF.svc/ObtenerLocales/JdvbEFJWJu5UVtk59")
   .then(function(response) {
     $scope.ubicaciones=[];
     $scope.ubicaciones=response.data.ObtenerLocalesResult;
@@ -64,7 +64,6 @@ angular.module('digitel.controllers',[])
   });
   $timeout(function () {
     if("idCliente" in localStorage){
-      console.log("entra");
       $rootScope.idUsuario=$localstorage.get('idCliente');
       clienteExiste=clientService.get({id:$rootScope.idUsuario},function() {
         $ionicLoading.hide();
@@ -197,7 +196,8 @@ $scope.actualizarCliente=function (actualizar) {
     telCliente:actualizar.telefonoCliente,
     dirCliente:actualizar.direccionCliente
   });
-  uploadPhoto(actualizar.foto);
+  // uploadBlobOrFile(actualizar.foto,$rootScope.idUsuario);
+  imagePost(actualizar.foto,$rootScope.idUsuario);
   $scope.cliente.nombreCliente=actualizar.nombreCliente;
   $ionicPopup.alert({
     title:'Atenci&oacute;n',
@@ -211,12 +211,37 @@ $scope.regresar = function() {
 
 $scope.getNewPhoto = function() {
   navigator.camera.getPicture(function(result) {
-    $scope.cliente.foto=result;
+    // $scope.cliente.foto=result;
+    var id=$rootScope.idUsuario;
+    var url = 'http://erp.impetuscr.com/Appdigitel/AppWCF.svc/CambiarFotoCliente/'+id+'/key/JdvbEFJWJu5UVtk59';
+    var targetPath = result;
+    var trustHosts = true
+    var options = {};
+
+    $cordovaFileTransfer.upload(url, targetPath, options, trustHosts)
+    .then(function(result) {
+      console.log(JSON.stringify(result));
+    }, function(err) {
+      console.log(JSON.stringify(err));
+    }, function (progress) {
+      console.log(JSON.stringify(progress));
+    });
+
   }, function(err) {
-    console.err(err);
+    console.err('error'+err);
   },{
-    destinationType : navigator.camera.DestinationType.FILE_URI,
-    quality:2
+    quality: 50,
+    destinationType: navigator.camera.DestinationType.DATA_URL,
+    sourceType: Camera.PictureSourceType.CAMERA,
+    // allowEdit: true,
+    encodingType: Camera.EncodingType.JPEG,
+    targetWidth: 100,
+    targetHeight: 100
+    // popoverOptions: CameraPopoverOptions,
+    // saveToPhotoAlbum: false
+    // destinationType : navigator.camera.DestinationType.DATA_URL,
+    // quality:2
+    
   });
 };
 $scope.getOldPhoto = function() {
@@ -230,10 +255,11 @@ $scope.getOldPhoto = function() {
     quality:2
   });
 };
-function uploadBlobOrFile(blobOrFile) 
+function uploadBlobOrFile(blobOrFile,id) 
 {
+  console.log(blobOrFile);
   var xhr = new XMLHttpRequest(); 
-  xhr.open('POST', 'http://54.183.76.52/AppDigitel/AppWCF.svc/CambiarFotoCliente/5263/key/JdvbEFJWJu5UVtk59', true);
+  xhr.open('POST', 'http://erp.impetuscr.com/Appdigitel/AppWCF.svc/CambiarFotoCliente/'+id+'/key/JdvbEFJWJu5UVtk59', true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4 && xhr.status == 200) {
       console.log(xhr.responseText);
@@ -241,51 +267,22 @@ function uploadBlobOrFile(blobOrFile)
   };
   xhr.send(blobOrFile);
 }
+function imagePost(image,id) {   
+ var url = 'http://erp.impetuscr.com/Appdigitel/AppWCF.svc/CambiarFotoCliente/'+id+'/key/JdvbEFJWJu5UVtk59';
+ var targetPath = image;
+ var trustHosts = true
+ var options = {};
 
-function upload(uri) {
-  console.log(uri);
-  var options = {
-    fileKey: "avatar",
-    fileName: "avatar.jpg",
-    chunkedMode: false,
-    mimeType: "image/*"
-  };
-  $cordovaFileTransfer.upload("http://54.183.76.52/AppDigitel/AppWCF.svc/CambiarFotoCliente/5263/key/JdvbEFJWJu5UVtk59", uri, options).then(function(result) {
-    console.log("SUCCESS: " + JSON.stringify(result.response));
-  }, function(err) {
-    console.log("ERROR: " + JSON.stringify(err));
-  }, function (progress) {
-            // constant progress updates
-          });
+ $cordovaFileTransfer.upload(url, targetPath, options, trustHosts)
+ .then(function(result) {
+  console.log(JSON.stringify(result));
+}, function(err) {
+  console.log(JSON.stringify(err));
+}, function (progress) {
+  console.log(JSON.stringify(progress));
+});
 }
 
-function uploadPhoto(imageURI) {
-  var options = new FileUploadOptions();
-  options.fileKey="file";
-  options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
-  options.mimeType="image/*";
-
-  var params = new Object();
-  params.value1 = "test";
-  params.value2 = "param";
-
-  // options.params = params;
-
-  var ft = new FileTransfer();
-  ft.upload(imageURI, "http://54.183.76.52/AppDigitel/AppWCF.svc/CambiarFotoCliente/5263/key/JdvbEFJWJu5UVtk59", win, fail, options);
-}
-
-function win(r) {
-  console.log("Code = " + r.responseCode);
-  console.log("Response = " + r.response);
-  console.log("Sent = " + r.bytesSent);
-}
-
-function fail(error) {
-  console.log("Upload error code " + error.code);
-  console.log("upload error source " + error.source);
-  console.log("upload error target " + error.target);
-}
 })
 .controller('PointsCtrl',function($resource,$scope,$rootScope,$http,$state,historicoPuntosService){
   puntosCliente=historicoPuntosService.get({id:$rootScope.idUsuario},function(){

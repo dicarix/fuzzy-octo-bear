@@ -1,6 +1,6 @@
 {
   "name": "Digitel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Digitel mobile app",
   "dependencies": {
     "gulp": "^3.5.6",
@@ -24,14 +24,10 @@
     "cordova-plugin-network-information",
     "cordova-plugin-camera",
     "cordova-plugin-device",
-    "cordova-plugin-geolocation"
+    "cordova-plugin-geolocation",
+    "org.apache.cordova.file-transfer"
   ],
   "cordovaPlatforms": [
-    "android",
-    {
-      "platform": "android",
-      "version": "",
-      "locator": "android"
-    }
+    "android"
   ]
 }
