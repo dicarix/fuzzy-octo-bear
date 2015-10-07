@@ -124,7 +124,7 @@ angular.module('digitel.controllers',[])
     maxWidth: 50,
     showDelay: 0
   });
-  $http.get("http://aws02.impetuscr.com/appdigitel/AppWCF.svc/ObtenerOfertasEnLinea/JdvbEFJWJu5UVtk59")
+  $http.get("http://erp.impetuscr.com/AppDigitel/AppWCF.svc/ObtenerOfertasEnLinea/JdvbEFJWJu5UVtk59")
   .then(function(response) {
     $ionicLoading.hide();
     $scope.ofertas=response.data.ObtenerOfertasEnLineaResult;
@@ -141,7 +141,7 @@ angular.module('digitel.controllers',[])
 })
 .controller('DashCtrl',function($cordovaFileTransfer,$ionicLoading,$resource,$scope,$rootScope,$http,clientService,actualizarClienteService,desafiliarClienteService,actualizarFotoService,$localstorage,$state,$ionicPopup,limitToFilter){
   var colorCategoria="#ebebeb";
-  $scope.html = "<a class='item item-icon-left' href='http://aws02.impetuscr.com/appdigitel/AppTerminosYCondiciones.html'><i class='icon ion-information-circled'></i>T&eacute;rminos y Condiciones</a>";
+  $scope.html = "<a class='item item-icon-left' href='http://erp.impetuscr.com/appdigitel/appterminosycondiciones.html'><i class='icon ion-information-circled'></i>T&eacute;rminos y Condiciones</a>";
   $scope.loading = $ionicLoading.show({
     template: '<i class="icon ion-loading-b"></i>Cargando',
     animation: 'fade-in',
